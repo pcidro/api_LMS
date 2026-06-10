@@ -3,19 +3,19 @@ const base = "http://localhost:3000";
 
 const functions = {
   async postCourse() {
-    const res = await fetch(base + "/lms/courses", {
+    const res = await fetch(base + "/lms/course", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(courses.javascript),
+      body: JSON.stringify(cursoReact),
     });
     const body = await res.json();
     console.table(body);
   },
 
   async postLesson(lesson) {
-    const res = await fetch(base + "/lms/lessons", {
+    const res = await fetch(base + "/lms/lesson", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,6 +24,18 @@ const functions = {
     });
     const body = await res.json();
     console.table(body);
+  },
+
+  async getCourses() {
+    const res = await fetch(base + "/lms/courses");
+    const body = await res.json();
+    console.log(body);
+  },
+
+  async getCourse() {
+    const res = await fetch(base + "/lms/course/javascript-completo");
+    const body = await res.json();
+    console.log(body);
   },
 };
 
