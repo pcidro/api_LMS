@@ -109,4 +109,13 @@ export class LmsQuery extends Query {
       )
       .all(courseSlug, lessonSlug) as { slug: string }[];
   }
+
+  insertLessonCompleted(userId: number, courseId: number, lessonId: number) {
+    return this.db
+      .prepare(
+        /*sql*/ `
+         SELECT "slug" FROM "lesson_nav" WHERE "course_id" = (SELECT "id" FROM "courses" WHERE "slug" = ?) AND "current_slug" = ?`,
+      )
+      .all(courseSlug, lessonSlug) as { slug: string }[];
+  }
 }
