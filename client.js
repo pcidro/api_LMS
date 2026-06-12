@@ -37,6 +37,14 @@ const functions = {
     const body = await res.json();
     console.log(body);
   },
+
+  async getLesson() {
+    const res = await fetch(
+      base + "/lms/lesson/javascript-completo/funcoes-basico",
+    );
+    const body = await res.json();
+    console.log(body);
+  },
 };
 
 if (process.argv[2]) {
