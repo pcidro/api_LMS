@@ -45,6 +45,23 @@ const functions = {
     const body = await res.json();
     console.log(body);
   },
+
+  async postUser() {
+    const res = await fetch(base + "/auth/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "André Rafael",
+        username: "andre",
+        email: "andre@origamid.com",
+        password: "12345678",
+      }),
+    });
+    const body = await res.json();
+    console.table(body);
+  },
 };
 
 if (process.argv[2]) {
