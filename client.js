@@ -68,12 +68,12 @@ const functions = {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        courseId: 1,
-        lessonId: 1,
+        courseId: process.argv[3],
+        lessonId: process.argv[4],
       }),
     });
     const body = await res.json();
-    console.table(body);
+    console.log(body);
   },
 
   async resetCourse() {
@@ -88,6 +88,18 @@ const functions = {
     });
     const body = await res.json();
     console.table(body);
+  },
+
+  async getCertificates() {
+    const res = await fetch(base + "/lms/certificates");
+    const body = await res.json();
+    console.log(body);
+  },
+
+  async getCertificate() {
+    const res = await fetch(base + "/lms/certificate/" + process.argv[3]);
+    const body = await res.json();
+    console.log(body);
   },
 };
 
