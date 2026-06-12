@@ -29,6 +29,15 @@ type lessonCreate = Omit<lessonData, "id" | "created" | "course_id"> & {
   courseSlug: string;
 };
 
+type CertificateFullData = {
+  id: string;
+  name: string;
+  title: string;
+  hours: number;
+  lessons: number;
+  completed: string;
+};
+
 export class LmsQuery extends Query {
   insertCourse({ slug, title, description, lessons, hours }: courseCreate) {
     return this.db
@@ -150,5 +159,51 @@ export class LmsQuery extends Query {
         )
         .run(userId, courseId);
     }
+  }
+
+  selectProgress(userId: number, courseId: number) {
+    return this.db
+      .prepare(
+        /*sql*/ `
+        SELECT 
+          "lessons"."id",
+          "lessons_completed"."completed"
+        FROM "lessons"
+        LEFT JOIN "lessons_completed"
+          ON "lessons"."id" = "lessons_completed"."lesson_id" AND "lessons_completed"."user_id"=?
+          WHERE "lessons"."course_id" = ?
+      `,
+      )
+      .all(userId, courseId) as { id: number; completed: string }[];
+  }
+
+  insertCertificate(userId: number, courseId: number) {
+    return this.db
+      .prepare(
+        /*sql*/ `
+         INSERT OR IGNORE INTO "certificates"("user_id", "course_id") VALUES(?, ?)
+      RETURNING "id"`,
+      )
+      .get(userId, courseId);
+  }
+
+  selectCertificates(userId: number) {
+    return this.db
+      .prepare(
+        /*sql*/ `
+         SELECT * FROM "certificates_full" WHERE "user_id" = ? 
+        `,
+      )
+      .all(userId) as CertificateFullData[];
+  }
+
+  selectCertificate(certificateId: string) {
+    return this.db
+      .prepare(
+        /*sql*/ `
+         SELECT * FROM "certificates_full" WHERE "id" = ? 
+        `,
+      )
+      .get(certificateId) as CertificateFullData | undefined;
   }
 }

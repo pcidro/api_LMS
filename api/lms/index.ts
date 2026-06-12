@@ -108,6 +108,7 @@ export class LmsApi extends Api {
     },
 
     completeLesson: (req, res) => {
+      console.log("entrou no completeLesson");
       const userId = 1;
       const { courseId, lessonId } = req.body;
       const writeResult = this.query.insertLessonCompleted(
@@ -118,7 +119,22 @@ export class LmsApi extends Api {
       if (writeResult.changes === 0) {
         throw new RouteError(400, "erro ao completar aula");
       }
+      const progress = this.query.selectProgress(userId, courseId);
+      const incompleteLessons = progress.filter((item) => !item.completed);
+      if (progress.length > 0 && incompleteLessons.length === 0) {
+        const certificate = this.query.insertCertificate(userId, courseId);
+        if (!certificate) {
+          throw new RouteError(400, "erro ao gerar certificado");
+        }
+
+        res.status(201).json({
+          certificate: certificate.id,
+          title: "Aula completa!",
+        });
+        return;
+      }
       res.status(201).json({
+        certificate: null,
         title: "Aula completa!",
       });
     },
@@ -132,6 +148,24 @@ export class LmsApi extends Api {
       res.status(200).json({
         title: "Curso resetado!",
       });
+    },
+
+    getCertificates: (req, res) => {
+      const userId = 1;
+      const certificates = this.query.selectCertificates(userId);
+      if (certificates.length === 0) {
+        throw new RouteError(400, "erro ao localizar certificados");
+      }
+      res.status(200).json(certificates);
+    },
+
+    getCertificate: (req, res) => {
+      const { id } = req.params;
+      const certificate = this.query.selectCertificate(id);
+      if (!certificate) {
+        throw new RouteError(400, "erro ao localizar certificado");
+      }
+      res.status(200).json(certificate);
     },
   } satisfies Api["handlers"];
 
@@ -150,5 +184,7 @@ export class LmsApi extends Api {
       this.handlers.getLesson,
     );
     this.router.post("/lms/lesson/complete", this.handlers.completeLesson);
+    this.router.get("/lms/certificates", this.handlers.getCertificates);
+    this.router.get("/lms/certificate/:id", this.handlers.getCertificate);
   }
 }
