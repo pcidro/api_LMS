@@ -114,8 +114,9 @@ export class LmsQuery extends Query {
     return this.db
       .prepare(
         /*sql*/ `
-         SELECT "slug" FROM "lesson_nav" WHERE "course_id" = (SELECT "id" FROM "courses" WHERE "slug" = ?) AND "current_slug" = ?`,
+      INSERT OR IGNORE INTO "lessons_completed"('user_id', "course_id", "lesson_id") VALUES(?, ?, ?)
+      `,
       )
-      .all(courseSlug, lessonSlug) as { slug: string }[];
+      .run(userId, courseId, lessonId);
   }
 }

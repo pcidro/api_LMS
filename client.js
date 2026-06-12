@@ -62,6 +62,21 @@ const functions = {
     const body = await res.json();
     console.table(body);
   },
+
+  async completeLesson() {
+    const res = await fetch(base + "/lms/lesson/complete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        courseId: 1,
+        lessonId: 1,
+      }),
+    });
+    const body = await res.json();
+    console.table(body);
+  },
 };
 
 if (process.argv[2]) {
