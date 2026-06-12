@@ -33,15 +33,13 @@ const functions = {
   },
 
   async getCourse() {
-    const res = await fetch(base + "/lms/course/javascript-completo");
+    const res = await fetch(base + "/lms/course/html-e-css");
     const body = await res.json();
     console.log(body);
   },
 
   async getLesson() {
-    const res = await fetch(
-      base + "/lms/lesson/javascript-completo/funcoes-basico",
-    );
+    const res = await fetch(base + "/lms/lesson/html-e-css/tags-basicas");
     const body = await res.json();
     console.log(body);
   },
@@ -72,6 +70,20 @@ const functions = {
       body: JSON.stringify({
         courseId: 1,
         lessonId: 1,
+      }),
+    });
+    const body = await res.json();
+    console.table(body);
+  },
+
+  async resetCourse() {
+    const res = await fetch(base + "/lms/course/reset", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        courseId: 1,
       }),
     });
     const body = await res.json();
