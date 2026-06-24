@@ -32,15 +32,16 @@ export class AuthApi extends Api {
         `,
         )
         .get(email);
+      console.log(user);
       if (!user || password !== user.password_hash) {
         throw new RouteError(404, "Email ou senha incorretos");
       }
-      const { sid_hash } = await this.session.create({
+      const { sid } = await this.session.create({
         userId: user.id as number,
         ip: req.ip,
         ua: req.headers["user-agent"] ?? "",
       });
-      res.setHeader("Set-Cookie", `sid=${sid_hash}; Path=/`);
+      res.setHeader("Set-Cookie", `sid=${sid}; Path=/`);
       res.status(200).json("Teste");
     },
   } satisfies Api["handlers"];

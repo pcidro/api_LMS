@@ -16,7 +16,7 @@ type UserData = {
 type userCreate = Omit<UserData, "id" | "created" | "updated">;
 
 type SessionCreate = {
-  sid_hash: number;
+  sid_hash: string;
   user_id: number;
   expires_ms: number;
   ip: string;
