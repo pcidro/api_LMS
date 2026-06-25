@@ -36,13 +36,13 @@ export class AuthApi extends Api {
       if (!user || password !== user.password_hash) {
         throw new RouteError(404, "Email ou senha incorretos");
       }
-      const { sid } = await this.session.create({
+      const { cookie } = await this.session.create({
         userId: user.id as number,
         ip: req.ip,
         ua: req.headers["user-agent"] ?? "",
       });
-      res.setHeader("Set-Cookie", `sid=${sid}; Path=/`);
-      res.status(200).json("Teste");
+      res.setHeader("Set-Cookie", cookie);
+      res.status(200).json({ title: "Autenticado" });
     },
   } satisfies Api["handlers"];
   tables(): void {

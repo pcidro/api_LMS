@@ -15,12 +15,18 @@ type UserData = {
 
 type userCreate = Omit<UserData, "id" | "created" | "updated">;
 
-type SessionCreate = {
-  sid_hash: string;
+type SessionData = {
+  sid_hash: Buffer;
+  created: number;
   user_id: number;
-  expires_ms: number;
+  expires: number;
   ip: string;
   ua: string;
+  revoked: number;
+};
+
+type SessionCreate = Omit<SessionData, "created" | "revoked" | "expires"> & {
+  expires_ms: number;
 };
 
 export class AuthQuery extends Query {
